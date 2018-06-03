@@ -67,30 +67,43 @@ public class ServidorJDF {
 				
 				clientes.add(out);
 				
-				String index = in.readLine(); 
-				System.out.println(index);
+				String message = in.readLine(); 
+				System.out.println(message);
 				while (!Thread.currentThread().isInterrupted()) {
 					
-					//enviar e receber mensagems do cliente
-					
-					if(index.equals("null")) {
+					if(message.equals("jogadores")) {
+						sendMessage(out, Integer.toString(clientes.size()));
+						System.out.println("mandei 1");
+					}
+					else if(message.equals("jogador")) {
+						if(clientes.indexOf(out) == 1 || clientes.indexOf(out) == 2) {
+							sendMessage(out, "escolhedor");
+							System.out.println("mandei 2");
+						}
+						else {
+							sendMessage(out, "adivinhador");
+							System.out.println("mandei 3");
+						}
+					}
+					else if(message.equals("null")) {
 						throw new IOException();
 					}
 					
 					// espera por uma nova linha.
-					index = in.readLine();
+					message = in.readLine();
 				}
 				
 				clientes.remove(out);
 				conexao.close();
 
 			}
-			catch(Exception ioException){
+			catch(IOException ioException){
 				System.out.println("erro input ou output");
 			}
 			finally{
 				// Fecha a conexao com o servidor
 				try{
+					clientes.remove(out);
 					conexao.close();
 					System.out.println("Conexao terminada com sucesso");
 					logger.escreverLog("Conexao terminada com sucesso");
@@ -106,6 +119,7 @@ public class ServidorJDF {
 		//funcao para enviar mensagems para o cliente
 		void sendMessage(PrintStream out, String msg) throws IOException {
 			out.println(msg);
+			System.out.println(msg);
 		}
 
 	}
